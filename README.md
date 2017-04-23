@@ -9,7 +9,7 @@ First, set up your Simplify3D profile. On the `Other` tab, set `XY Axis movement
 and the end script to 
 
     ;SIMPL_END
-You may add other commands too if you are sure they are g2core-compatible. A better way would be to create a snipper in the `start` folder. 
+You may add other commands too if you are sure they are g2core-compatible. A better way would be to create a snippet in the `start` folder. 
 ```
 python3 transform.py input.gcode output.gcode
 ```
