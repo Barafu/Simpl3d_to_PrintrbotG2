@@ -31,19 +31,26 @@ def main():
             temp = int(bits[1].lstrip('S'))
             result.append("M100 ({{\"he1st\":{}}})\n".format(temp))
             continue
-        if bits[0]==("M109"): #Nozzle temp with wait
-            temp = int(bits[1].lstrip('S'))
-            result.append("M100 ({{\"he1st\":{}}})\n".format(temp))
-            result.append("M101 ({\"he1at\":true})\n")
-            continue
         if bits[0]==("M140"): #Bed temp
             temp = int(bits[1].lstrip('S'))
             result.append("M100 ({{\"he3st\":{}}})\n".format(temp))
             continue
+
+        #M109 and M190 stand for "set temp and wait until it is reached"
+        #While thise can easily be converted, Simplify3D uses them in
+        #strange order, so I commented out the "wait" part and instead
+        #set it up in start/20-wait_temp snippet.
+        #If you use different slicer or have special reasons,
+        #uncomment M101 lines below and comment out that snippet.
+        if bits[0]==("M109"): #Nozzle temp with wait
+            temp = int(bits[1].lstrip('S'))
+            result.append("M100 ({{\"he1st\":{}}})\n".format(temp))
+            #result.append("M101 ({\"he1at\":true})\n")
+            continue
         if bits[0]==("M190"): #Bed temp with wait
             temp = int(bits[1].lstrip('S'))
             result.append("M100 ({{\"he3st\":{}}})\n".format(temp))
-            result.append("M101 ({\"he3at\":true})\n")
+            #result.append("M101 ({\"he3at\":true})\n")
             continue
 
         #Few MXXX commands are supported, and those have different
@@ -65,6 +72,9 @@ def main():
         line=" ".join(bits)
         result.append("{}\n".format(line))
 
+    #Add prestart snippets to the very beginning.
+    result[0:0]=collect_snippets("prestart")
+
     with open(sys.argv[2], 'w') as out_file:
         for line in result:
             out_file.write(line)
@@ -76,14 +86,12 @@ def collect_snippets(foldername):
     snippets=[]
     files = [f for f in listdir(foldername)
             if isfile(join(foldername, f))]
-    print(files)
     for filename in sorted(files):
         if filename.startswith('-'):
             continue
         with open(join(foldername, filename), 'r') as f:
             code = [t for t in f.readlines()
                     if not t.startswith(';') and not t=="\n"]
-            print (code)
             snippets.extend(code)
     return snippets
 
