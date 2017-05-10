@@ -15,5 +15,4 @@ python3 transform.py input.gcode output.gcode
 ```
 Then send the result gcode to printer. To tune the process, edit the snippet files in `start` and `fin` folders. 
 # Future plans
-* CLI
-* Find approximated curves and replace them with G2/G3 command. 
+This project will not be developed anymore because Printrbot G2 boards are being shipped with Marlin compatibility mode now, so tools like Octoprint should just work. 
